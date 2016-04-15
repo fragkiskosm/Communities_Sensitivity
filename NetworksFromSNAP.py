@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
+
 @author: mmitri
 """
 from collections import defaultdict
@@ -210,38 +211,38 @@ def convert_1(filename , new_graph_destination , perturb_model , epsilon , addOR
     # Return the graph also
     return G
 
-def convert_to_igraph_format(convert_path , algo_name , net_name ,  perturb_model=None , epsilon=None , addORdel=None , link_pred_file=None):
+def convert_to_igraph_format(source_path, convert_path , algo_name , net_name ,  perturb_model=None , epsilon=None , addORdel=None , link_pred_file=None):
     
     """ Chose the algo"""
     if algo_name == 'iGraph_algos':
         
         """ Chose the network"""
         if  net_name == 'Email-Enron':
-            net_path = '/home/mmitri/Documents/Stage/Data/Enron email network/Email-Enron.txt'
+            net_path = source_path+'Email-Enron.txt'
             graph = convert_1(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'CA-GrQc':
-            net_path = '/home/mmitri/Documents/Stage/Data/General Relativity and Quantum Cosmology collaboration network/CA-GrQc.txt'
+            net_path = source_path+'CA-GrQc.txt'
             graph = convert_1(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'CA-AstroPhys':
-            net_path = '/home/mmitri/Documents/Stage/Data/Astro Physics collaboration network/CA-AstroPh.txt'
+            net_path = source_path+'CA-AstroPh.txt'
             graph = convert_1(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'Wiki-Vote':
-            net_path = '/home/mmitri/Documents/Stage/Data/Wikipedia vote network/Wiki-Vote.txt'
+            net_path = source_path+'Wiki-Vote.txt'
             graph = convert_1(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
 
         if  net_name == 'AS-Caida':
-            net_path = '/home/mmitri/Documents/Stage/Data/as-Caida/as-caida20040105.txt'
+            net_path = source_path+'as-caida20040105.txt'
             graph = convert_1(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'CA-HepTh':
-            net_path = '/home/mmitri/Documents/Stage/Data/CA-HepTh/CA-HepTh.txt'
+            net_path = source_path+'CA-HepTh.txt'
             graph = convert_1(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'P2P-GNutella':
-            net_path = '/home/mmitri/Documents/Stage/Data/Nutella/p2p-Gnutella08.txt'
+            net_path = source_path+'p2p-Gnutella08.txt'
             graph = convert_1(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         return graph
@@ -252,31 +253,31 @@ def convert_to_igraph_format(convert_path , algo_name , net_name ,  perturb_mode
         
         """ Chose the network"""
         if  net_name == 'Email-Enron':
-            net_path = '/home/mmitri/Documents/Stage/Data/Enron email network/Email-Enron.txt'
+            net_path = source_path+'Email-Enron.txt'
             nb_nodes = convert_to_METIS_graph_format(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'CA-GrQc':
-            net_path = '/home/mmitri/Documents/Stage/Data/General Relativity and Quantum Cosmology collaboration network/CA-GrQc.txt'
+            net_path = source_path+'CA-GrQc.txt'
             nb_nodes = convert_to_METIS_graph_format(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'CA-AstroPhys':
-            net_path = '/home/mmitri/Documents/Stage/Data/Astro Physics collaboration network/CA-AstroPh.txt'
+            net_path = source_path+'CA-AstroPh.txt'
             nb_nodes = convert_to_METIS_graph_format(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
             
         if  net_name == 'Wiki-Vote':
-            net_path = '/home/mmitri/Documents/Stage/Data/Wikipedia vote network/Wiki-Vote.txt'
+            net_path = source_path+'Wiki-Vote.txt'
             nb_nodes = convert_to_METIS_graph_format(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
 
         if  net_name == 'AS-Caida':
-            net_path = '/home/mmitri/Documents/Stage/Data/as-Caida/as-caida20040105.txt'
+            net_path = source_path+'as-caida20040105.txt'
             nb_nodes = convert_to_METIS_graph_format(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
 
         if  net_name == 'CA-HepTh':
-            net_path = '/home/mmitri/Documents/Stage/Data/CA-HepTh/CA-HepTh.txt'
+            net_path = source_path+'CA-HepTh.txt'
             nb_nodes = convert_to_METIS_graph_format(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
 
         if  net_name == 'P2P-GNutella':
-            net_path = '/home/mmitri/Documents/Stage/Data/Nutella/p2p-Gnutella08.txt'
+            net_path = source_path+'p2p-Gnutella08.txt'
             nb_nodes = convert_to_METIS_graph_format(net_path,convert_path, perturb_model , epsilon , addORdel , link_pred_file , delimiter='\t',nodetype=str)
         
     
@@ -495,7 +496,7 @@ def convert_to_METIS_graph_format(filename,metis_graph_destination , perturb_mod
     return n
 
 
-def METIS_Clustering(convert_path , network_name , npart ,  perturb_model=None , epsilon=None , addORdel=None , link_pred_file=None):
+def METIS_Clustering(source_path, convert_path , network_name , npart ,  perturb_model=None , epsilon=None , addORdel=None , link_pred_file=None):
     ''' All the METIS clustering pipeline 
     npart = Number of cluster (parameter of METIS algo) 
     '''
@@ -506,7 +507,7 @@ def METIS_Clustering(convert_path , network_name , npart ,  perturb_model=None ,
     
     """ Convert graphs to METIS format """
     
-    nb_nodes = convert_to_igraph_format(convert_path, algo_name='METIS' , net_name=network_name , perturb_model=perturb_model , epsilon=epsilon , addORdel=addORdel , link_pred_file=link_pred_file)
+    nb_nodes = convert_to_igraph_format(source_path, convert_path, algo_name='METIS' , net_name=network_name , perturb_model=perturb_model , epsilon=epsilon , addORdel=addORdel , link_pred_file=link_pred_file)
     
     '''=============================================================================
     # CLUSTERING WITH METIS

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
+
 @author: mmitri
 """
 
@@ -19,7 +20,7 @@ from variation_of_information_score import *
 import matplotlib as mpl
 
 
-def Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , save__NCP_values_min_algo , save__NCP_k_values_algo , save__NCP_k_distribution , Fiedler_value_per_noise , algo_name):
+def Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , save__NCP_values_min_algo , save__NCP_k_values_algo , save__NCP_k_distribution , Fiedler_value_per_noise , algo_name):
         
     ''' 
     Do several plots (NMI, VI, NCPs)
@@ -95,7 +96,7 @@ def Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run
     plt.draw()
     
     # SAVE
-    fig1.savefig('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/NCPsPlots_'+network_name+'_'+noise_model+'_'+add_or_delete+'_'+algo_name+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
+    fig1.savefig(path_results+'NCPsPlots_'+network_name+'_'+noise_model+'_'+add_or_delete+'_'+algo_name+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
     
     
     
@@ -135,4 +136,4 @@ def Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run
     plt.xlabel('k (number of nodes in the cluster)', fontsize=14)
 
     # SAVE
-    fig.savefig('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/CDFofClustersSizes_'+network_name+'_'+noise_model+'_'+add_or_delete+'_'+algo_name+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
+    fig.savefig(path_results+'CDFofClustersSizes_'+network_name+'_'+noise_model+'_'+add_or_delete+'_'+algo_name+'.pdf', dpi=500, format='pdf', bbox_inches="tight")

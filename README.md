@@ -71,7 +71,7 @@ Lines 30, 32, 34, 36, 39, 41, 43, 45 for Blondel Multilevel, FastGreedyMM, Infom
  * Line 123 to 272 : do clustering of original (unperturbed) graphs and compute metrics.
  * Line 290 to 805 : do clustering of perturbed graphs and compute metrics.
  
-* Plot resutls
+* Plot results
  * Line 814 to 968 : produces functional sensitivity plots for several community detection algorithms (NMI, VI, ARI, Modularity, and Number of clusters versus noise levels).
  * Line 979 to 1023 : produces structural sensitivity plots for the community detection algorithms (as well as CDF of clusters' sizes as function of noise).
 

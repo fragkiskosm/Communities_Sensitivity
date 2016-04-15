@@ -55,3 +55,23 @@ Lines 30, 32, 34, 36, 39, 41, 43, 45 for Blondel Multilevel, FastGreedyMM, Infom
   * CLP+Delete => `epsilon_values = [i * 91.6 for i in epsilon_valuesI]` (line 69)
   * Configuration model => nothing to do (line 75)
 
+* Set directory paths in lines 79 to 87 (paths and directories from where we read the input datasets (graphs in .txt format), do conversions in format readable by iGraph/Metis and write results):
+ * Line 79 : `source_path = ***put your own path***`
+ * Line 81 : `convert_path = ***put your own path*** + network_name + '_iGraphFormat.txt'`
+ * Line 82 : `convert_path_metis = ***put your own path*** + network_name + '_MetisFormat.txt'`
+ * Line 84 : `convert_path_P = ***put your own path*** + network_name + '_iGraphFormat_Perturbed.txt'`
+ * Line 85 : `convert_path_metis_P = ***put your own path*** + network_name + '_MetisFormat_Perturbed.txt'`
+ * Line 87 : `path_results = ***put your own path***`
+ 
+* Line 95 to line 113 : we declare variables that will store results.
+
+* Line 104 : boolean variable `ifSave` that allows to save plots on the disk (always set to `True`)
+
+* Community detection
+ * Line 123 to 272 : do clustering of original (unperturbed) graphs and compute metrics.
+ * Line 290 to 805 : do clustering of perturbed graphs and compute metrics.
+ 
+* Plot resutls
+ * Line 814 to 968 : produces functional sensitivity plots for several community detection algorithms (NMI, VI, ARI, Modularity, and Number of clusters versus noise levels).
+ * Line 979 to 1023 : produces structural sensitivity plots for the community detection algorithms (as well as CDF of clusters' sizes as function of noise).
+

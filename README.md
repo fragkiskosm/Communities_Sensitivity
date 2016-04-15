@@ -49,9 +49,9 @@ Lines 30, 32, 34, 36, 39, 41, 43, 45 for Blondel Multilevel, FastGreedyMM, Infom
 * Line 64 : chose the perturabation type (`Add` or `Delete` edges. Note that for CONFIG model this parameter is not important).
 
 * Line 66 to line 75 : noise levels. The user has only to set the intensity of the perturbation at lines 69 (for `Delete` type) and 72 (for `Add` type). For example, for the CA-HEP-TH network, we have set the following parameters for the different perturbation models:
-  * ERP+Add => epsilon_values = [i * 0.285 for i in epsilon_valuesI] (line 72)
-  * ERP+Delete => epsilon_values = [i * 475 for i in epsilon_valuesI] (line 69)
-  * CLP+Add => epsilon_values = [i * 0.285 for i in epsilon_valuesI] (line 72)
-  * CLP+Delete => epsilon_values = [i * 91.6 for i in epsilon_valuesI] (line 69)
+  * ERP+Add => `epsilon_values = [i * 0.285 for i in epsilon_valuesI]` (line 72)
+  * ERP+Delete => `epsilon_values = [i * 475 for i in epsilon_valuesI]` (line 69)
+  * CLP+Add => `epsilon_values = [i * 0.285 for i in epsilon_valuesI]` (line 72)
+  * CLP+Delete => `epsilon_values = [i * 91.6 for i in epsilon_valuesI]` (line 69)
   * Configuration model => nothing to do (line 75)
 

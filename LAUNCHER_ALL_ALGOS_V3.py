@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
+
 @author: mmitri
 """
 
@@ -44,38 +45,46 @@ ifSpectralClustering = True
 ifMETIS = True
 
 
-ifSpinglass = False
-ifMCL = False
-
-
 algos_labels = []
 algos_line_style = []
 nb_active_algos = 8
 
 ''' Chose the network '''
 network_name = ['Email-Enron' , 'CA-GrQc' , 'CA-AstroPhys' , 'Wiki-Vote' , 'AS-Caida', 'CA-HepTh', 'P2P-GNutella']
-network_name = network_name[6]
+network_name = network_name[5]
 
 ''' Chose the number of run '''
 nb_run = 2
 
 
 ''' Chose the noise model '''
-noise_model = ['ERP' , 'CLP' , 'LPP' , 'CONFIG']
-noise_model = noise_model[1]
+noise_model = ['ERP' , 'CLP' , 'CONFIG']
+noise_model = noise_model[0]
 
 add_or_delete = 'Add' # Add or 'Delete'
 
 if (noise_model != 'CONFIG'):
     if add_or_delete=='Delete':
         epsilon_valuesI = [ 0 , 0.01 , 0.2 , 0.4 , 0.6 , 0.8 , 1 , 1.5 , 2 , 2.5 , 3 , 3.5 , 4 , 4.5 , 5 , 6]
-        epsilon_values = [i * 225.2 for i in epsilon_valuesI]
+        epsilon_values = [i * 475 for i in epsilon_valuesI]
     elif add_or_delete=='Add':
         epsilon_valuesI = [ 0 , 0.01 , 0.2 , 0.4 , 0.6 , 0.8 , 1 , 1.5 , 2 , 2.5 , 3 , 3.5 , 4 , 4.5 , 5 , 6]
         epsilon_values = [i * 0.32 for i in epsilon_valuesI]
 else:
     # Alpha values between 0 and 1 
     epsilon_values = np.linspace(0, 30, num=16)
+
+
+''' Paths '''
+source_path = '/home/mmitri/Documents/Stage/Data/Source/'
+
+convert_path = '/home/mmitri/Documents/Stage/Data/Converted/' + network_name + '_iGraphFormat.txt'
+convert_path_metis = '/home/mmitri/Documents/Stage/Data/Converted/' + network_name + '_MetisFormat.txt'
+
+convert_path_P = '/home/mmitri/Documents/Stage/Data/Converted/' + network_name + '_iGraphFormat_Perturbed.txt'
+convert_path_metis_P = '/home/mmitri/Documents/Stage/Data/Converted/' + network_name + '_MetisFormat_Perturbed.txt'
+
+path_results = '/home/mmitri/Documents/Stage/Codes/Results/'
 
 
 ''' Evaluating the results '''
@@ -111,9 +120,7 @@ Fiedler_value_per_noise = np.empty((nb_run, len(epsilon_values)))
 ''' ********  U ==> Unperturbed graph ******** '''
 print '\n ******** Original graph ********' 
 
-convert_path = '/home/mmitri/Documents/Stage/Data/iGraphFormat/' + network_name + '_iGraphFormat.txt'
-
-G_networkX = convert_to_igraph_format(convert_path, algo_name='iGraph_algos' , net_name=network_name)
+G_networkX = convert_to_igraph_format(source_path, convert_path, algo_name='iGraph_algos' , net_name=network_name)
 
 G = Graph.Read_Edgelist(f=convert_path, directed=False)
 
@@ -190,21 +197,6 @@ if ifLeadingEigenvector:
     # Label for plot
     algos_labels.append('LeadingEigen')
     algos_line_style.append('p')
-
-
-if ifSpinglass:
-
-    ''' Clustering the original graph'''
-    # a list of VertexClustering objects, one corresponding to each level (if return_levels is True), or a VertexClustering corresponding to the best modularity.
-    clusters_Spinglass = G.community_spinglass()
-    
-    #print '\ Number of clusters for original graph: ', len(clusters)
-    #print '\n Modularity value after clustering (original G) is :', G.modularity(clusters)
-    
-    # Label for plot
-    algos_labels.append('Spinglass')
-    algos_line_style.append('*')
-    
     
 
 if ifWalktrap:
@@ -271,11 +263,9 @@ if ifSpectralClustering:
 if ifMETIS:
     ''' Clustering the original graph'''
     
-    convert_path = '/home/mmitri/Documents/Stage/Data/MetisFormat/' + network_name + '_MetisFormat.txt'
-    
     nb_clust_Metis = len(clusters_Louvain)
     
-    clusters_METIS = METIS_Clustering(convert_path , network_name , npart=nb_clust_Metis)
+    clusters_METIS = METIS_Clustering(source_path, convert_path_metis , network_name , npart=nb_clust_Metis)
     
     # Label for plot
     algos_labels.append('Metis')
@@ -296,10 +286,8 @@ for i in range(nb_run):
 
     
     for j,eps in enumerate(epsilon_values):
-    
-        convert_path_P = '/home/mmitri/Documents/Stage/Data/iGraphFormatPerturbed/' + network_name + '_iGraphFormat_Perturbed.txt'
         
-        G_P_networkX = convert_to_igraph_format(convert_path_P, algo_name='iGraph_algos' , net_name=network_name , perturb_model=noise_model , epsilon = eps , addORdel=add_or_delete , link_pred_file=None)
+        G_P_networkX = convert_to_igraph_format(source_path, convert_path_P, algo_name='iGraph_algos' , net_name=network_name , perturb_model=noise_model , epsilon = eps , addORdel=add_or_delete , link_pred_file=None)
         
         G_P = Graph.Read_Edgelist(f=convert_path_P, directed=False)
         
@@ -561,43 +549,8 @@ for i in range(nb_run):
             NCP_k_distribution_LeadingEigen.append(k_distribution)
             
             del clusters_P_LeadingEigen
-    
 
-        if ifSpinglass:
-            '''============================================================================
-            #    SPINGLASS
-            #=============================================================================='''
-            
-            ''' Finds the community structure of the graph according to the spinglass community detection method of Reichardt & Bornholdt.
-            
-            Ref :: Reichardt J and Bornholdt S: Statistical mechanics of community detection. Phys Rev E 74:016110 (2006). http://arxiv.org/abs/cond-mat/0603718.
-            Ref :: Traag VA and Bruggeman J: Community detection in networks with positive and negative links. Phys Rev E 80:036115 (2009). http://arxiv.org/abs/0811.2329. '''
-        
-            
-            ''' Clustering the perturbed graph'''
-            # a list of VertexClustering objects, one corresponding to each level (if return_levels is True), or a VertexClustering corresponding to the best modularity.
-            clusters_P_Spinglass = G_P.community_spinglass()
-            
-            #print '\ Number of clusters for perturbed graph: ', len(clusters_P)
-            #print '\n Modularity value after clustering (perturbed G) is :', G_P.modularity(clusters_P)
-            
-        
-            ''' ********  Evaluating clusters similarity ******** '''
-            
-            print '\n ******** Results ********' 
-            
-            nmi_igraph = compare_communities(clusters_Spinglass, clusters_P_Spinglass, method='nmi', remove_none=False)
-            print '\n Normalized Mutual Information Spinglass is :', nmi_igraph
-            vi_igraph = compare_communities(clusters_Spinglass, clusters_P_Spinglass, method='vi', remove_none=False)
-            
-            # Saving the results
-            nmi_values[k,i,j] = nmi_igraph
-            vi_values[k,i,j] = vi_igraph
-            
-            k=k+1
-            del clusters_P_Spinglass
-            
-            
+
 
         if ifWalktrap:
             '''============================================================================
@@ -797,11 +750,9 @@ for i in range(nb_run):
         if ifMETIS:
             ''' Clustering the perturbed graph ''' 
             
-            convert_path_P = '/home/mmitri/Documents/Stage/Data/MetisFormatPerturbed/' + network_name + '_MetisFormat_Perturbed.txt'
-            
             nb_clust_Metis = len(clusters_P_Louvain)
             
-            clusters_P_METIS = METIS_Clustering(convert_path_P , network_name , npart=nb_clust_Metis , perturb_model=noise_model , epsilon = eps , addORdel=add_or_delete , link_pred_file=None)
+            clusters_P_METIS = METIS_Clustering(source_path, convert_path_metis_P , network_name , npart=nb_clust_Metis , perturb_model=noise_model , epsilon = eps , addORdel=add_or_delete , link_pred_file=None)
 
 
             # Transform assignment in a dict format 
@@ -880,12 +831,12 @@ for z in range(len(nmi_values)): # len(3D) gives the depth so per algo values
     plt.draw()
     
 if ifSave:
-    fig1.savefig('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/ALLalgos_NMI_'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
+    fig1.savefig(path_results+'ALLalgos_NMI_'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
     
     # Save average n_added_deleted_edges
-    np.save('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/AVG_n_added_deleted_edges_'+network_name+'_'+noise_model+'_'+add_or_delete , np.mean(n_added_deleted_edges, axis=0))
+    np.save(path_results+'AVG_n_added_deleted_edges_'+network_name+'_'+noise_model+'_'+add_or_delete , np.mean(n_added_deleted_edges, axis=0))
     # Save NMI values
-    np.save('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/NMIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete , nmi_values)
+    np.save(path_results+'NMIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete , nmi_values)
     
     ## LOAD 
     ## Save average n_added_deleted_edges
@@ -916,10 +867,10 @@ for z in range(len(vi_values)): # len(3D) gives the depth so per algo values
     plt.draw()
     
 if ifSave:
-    fig2.savefig('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/ALLalgos_VI'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
+    fig2.savefig(path_results+'ALLalgos_VI'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
     
     # Save VI values
-    np.save('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/VIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete ,vi_values)
+    np.save(path_results+'VIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete ,vi_values)
     
     ## LOAD 
     ## Save average n_added_deleted_edges
@@ -949,9 +900,9 @@ for z in range(len(ari_values)): # len(3D) gives the depth so per algo values
     plt.draw()
     
 if ifSave:
-    fig1.savefig('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/ALLalgos_ARI_'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
+    fig1.savefig(path_results+'ALLalgos_ARI_'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
         # Save NMI values
-    np.save('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/ARIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete , ari_values)
+    np.save(path_results+'ARIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete , ari_values)
     
     
 
@@ -976,10 +927,10 @@ for z in range(len(modularity_values)): # len(3D) gives the depth so per algo va
     plt.draw()
     
 if ifSave:
-    fig3.savefig('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/ALLalgos_Modularity'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
+    fig3.savefig(path_results+'ALLalgos_Modularity'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
     
     # Save VI values
-    np.save('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/Modularityvalues_'+network_name+'_'+noise_model+'_'+add_or_delete ,modularity_values)
+    np.save(path_results+'Modularityvalues_'+network_name+'_'+noise_model+'_'+add_or_delete ,modularity_values)
     
     ## LOAD 
     ## Save average n_added_deleted_edges
@@ -1011,10 +962,10 @@ for z in range(len(nb_clusters_values)): # len(3D) gives the depth so per algo v
     plt.draw()
     
 if ifSave:
-    fig4.savefig('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/ALLalgos_NbClust'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
+    fig4.savefig(path_results+'ALLalgos_NbClust'+network_name+'_'+noise_model+'_'+add_or_delete+'.pdf', dpi=500, format='pdf', bbox_inches="tight")
     
     # Save VI values
-    np.save('/home/mmitri/Documents/Stage/Codes/Results/'+noise_model+'/'+network_name+'/nb_clusters_values_'+network_name+'_'+noise_model+'_'+add_or_delete ,nb_clusters_values)
+    np.save(path_results+'nb_clusters_values_'+network_name+'_'+noise_model+'_'+add_or_delete ,nb_clusters_values)
     
     ## LOAD 
     ## Save average n_added_deleted_edges
@@ -1027,156 +978,49 @@ if ifSave:
 ''' Plot NCPs for Louvain '''
 if ifBlondelMultilevel:
     
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_Louvain , save__NCP_k_values_Louvain , save__NCP_k_distribution_Louvain , Fiedler_value_per_noise , algo_name='Louvain')
 
 ''' Plot NCPs for FastGreedyMM '''
 if ifFastGreedyMaxModularity:
     
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_FastGreedyMM , save__NCP_k_values_FastGreedyMM , save__NCP_k_distribution_FastGreedyMM , Fiedler_value_per_noise , algo_name='FastGreedyMM')
 
 ''' Plot NCPs for Infomap '''
 if ifINFOMAP:
     
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_Infomap , save__NCP_k_values_Infomap , save__NCP_k_distribution_Infomap , Fiedler_value_per_noise , algo_name='Infomap')
 
 ''' Plot NCPs for LeadingEigen '''
 if ifLeadingEigenvector:
     
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_LeadingEigen , save__NCP_k_values_LeadingEigen , save__NCP_k_distribution_LeadingEigen , Fiedler_value_per_noise , algo_name='LeadingEigen')
 
 ''' Plot NCPs for Walktrap '''
 if ifWalktrap:
     
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_Walktrap , save__NCP_k_values_Walktrap , save__NCP_k_distribution_Walktrap , Fiedler_value_per_noise , algo_name='Walktrap')
 
 ''' Plot NCPs for LabelPropag '''
 if ifLabelPropagation:
     
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_LabelPropag , save__NCP_k_values_LabelPropag , save__NCP_k_distribution_LabelPropag , Fiedler_value_per_noise , algo_name='LabelPropag')                       
 
 
 ''' Plot NCPs for Spectral Clustering '''
 if ifSpectralClustering:
     
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_Spectral , save__NCP_k_values_Spectral , save__NCP_k_distribution_Spectral , Fiedler_value_per_noise , algo_name='Spectral clustering')                       
 
 ''' Plot NCPs for Metis '''
 if ifMETIS:
-    Plot_and_save_NCP_charts(network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
+    Plot_and_save_NCP_charts(path_results, network_name , noise_model , add_or_delete , nb_run , n_added_deleted_edges , epsilon_values , 
                          save__NCP_values_min_Metis , save__NCP_k_values_Metis , save__NCP_k_distribution_Metis , Fiedler_value_per_noise , algo_name='Metis') 
                          
-                         
-                         
-#if ifLouvain:
-#    '''============================================================================
-#    #    LOUVAIN METHOD
-#    #=============================================================================='''
-#    ''' Our method, that we call Louvain Method (because, even though the co-authors now hold positions in Paris, London and Louvain, the method was 
-#    devised when they all were in Louvain), outperforms other methods in terms of computation time, which allows us to analyze networks of unprecedented 
-#    size (e.g. the analysis of a typical network of 2 million nodes only takes 2 minutes). The Louvain method has also been to shown to be very accurate by 
-#    focusing on ad-hoc networks with known community structure. Moreover, due to its hierarchical structure, which is reminiscent of renormalization methods, 
-#    it allows to look at communities at different resolutions.
-#    The method consists of two phases. First, it looks for "small" communities by optimizing modularity in a local way. Second, it aggregates nodes of the same community and builds a new network whose nodes are the communities. These steps are repeated iteratively until a maximum of modularity is attained.
-#    
-#    Ref :: http://arxiv.org/abs/0803.0476
-#    
-#    Author site : 
-#    Package site : http://perso.crans.org/aynaud/communities/'''
-#    #better with karate_graph() as defined in networkx example.
-#    #erdos renyi don't have true community structure
-#    # G = nx.erdos_renyi_graph(30, 0.05)
-#    
-#    net_path = '/home/mmitri/Documents/Stage/Data/General Relativity and Quantum Cosmology collaboration network/CA-GrQc.txt'
-#    
-#    G = nx.read_edgelist(net_path , comments='#' , delimiter='\t' , create_using=nx.Graph() , nodetype=int , data=True , edgetype=None, encoding='utf-8')
-#    
-#    # We consider only the greatest connected component !!!
-#    G = max(nx.connected_component_subgraphs(G), key=len)
-#    
-#    #first compute the best partition // Format : node id --> cluster id
-#    partition = community.best_partition(G)
-#    
-#    # Putting clusters inigraph format : cluster id --> node id 
-#    # BUT ATTENTION !!!!!!! --> in igraph, clusters are returned in a VertexClustering object (LIST)
-#    # clusters = {v: k for k, v in partition.items()} # if values are unique (it's not the case here because we have multiple cluster id for different node id)
-#    clusters = {}
-#    for k, v in partition.iteritems():
-#        clusters[v] = clusters.get(v, [])
-#        clusters[v].append(k)
-#    # In a List now
-#    clusters_igraph_format = []
-#    for key, value in clusters.iteritems():
-#        temp = value
-#        clusters_igraph_format.append(temp)
-#    
-#    print clusters_igraph_format
-#    
-#    #drawing
-#    size = float(len(set(partition.values())))
-#    pos = nx.spring_layout(G)
-#    count = 0.
-#    for com in set(partition.values()) :
-#        count = count + 1.
-#        list_nodes = [nodes for nodes in partition.keys()
-#                                    if partition[nodes] == com]
-#        nx.draw_networkx_nodes(G, pos, list_nodes, node_size = 20,
-#                                    node_color = str(count / size))
-#    
-#    
-#    nx.draw_networkx_edges(G,pos, alpha=0.5)
-#    
-#if ifMCL:
-#    '''============================================================================
-#    #    MARKOV CLUSTERING
-#    #=============================================================================='''
-#    ''' Ref  ::: http://micans.org/mcl/ '''
-#    
-#    
-#    """ Step 0) - Parameters """
-#    
-#    # Network file
-#    net_path = '/home/mmitri/Documents/Stage/Data/General Relativity and Quantum Cosmology collaboration network/CA-GrQc.txt'
-#    
-#    # Algo parameters
-#    delimiter = '\t'  # delimiter used in the network file to separate nodes (i.e. represents edges)
-#    inflation_param = 2 # This clustering method accepts a single parameter controlling the granularity 
-#    # of the resulting clustering called inflation. Low inflation leads to coarser clusterings, high inflation leads to fine-grained clusterings. 
-#    # It is suggested to use a few values, for example 1.4, 2, and 6.
-#    
-#    expansion_param = 2 # Responsible for allowing flow to connect different regions of the graph
-#    
-#    # Informally, cast in the language of stochastic flow, we can state that expansion causes flow 
-#    # to dissipate within clusters whereas inflation eliminates flow between different clusters.
-#
-#    # G is the graph
-#    
-#    #G = nx.read_edgelist(net_path , comments='#' , delimiter='\t' , create_using=nx.Graph() , nodetype=int , data=True , edgetype=None, encoding='utf-8')
-#    
-#    # We consider only the greatest connected component !!!
-#    #G = max(nx.connected_component_subgraphs(G), key=len)
-#    
-#    A = G.get_adjacency()
-#    yoyo = A.data
-#    A = np.array(A.data)
-#    #A = np.array(list(G.get_adjacency()))    
-#    """ Step 2) - Runing Markov Cluster algorithm """
-#    
-#    M, clusters = mcl.mcl(A, expand_factor = expansion_param, inflate_factor = inflation_param , max_loop = 10 , mult_factor = 1)
-#    
-#
-#
-#
-#
-#    
-##    nmi = metrics.normalized_mutual_info_score(labels_true, labels_pred)
-##    print '\n Normalized Mutual Information is :', nmi
-##    
-##    ami = metrics.adjusted_mutual_info_score(labels_true, labels_pred)
-##    print '\n Adjusted (for chance) Mutual Information is :', ami
+    

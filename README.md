@@ -31,3 +31,27 @@
 * `community_quality_NetworkX.py`: script containing functions modularity and conductance scores.
 
 * `community_utils_NetworkX.py`: utils used by community_quality_NetworkX.py.
+
+* `LAUNCHER_ALL_ALGOS_V3.py`: produces the results using the `CA-HEP-TH` network as example
+
+## Parameters' Choise ##
+How to set the paprameters if the `LAUNCHER_ALL_ALGOS_V3.py` script:
+
+* Which community detection algorithm? The choice is done by setting the boolean variables to `True` or `False`.
+Lines 30, 32, 34, 36, 39, 41, 43, 45 for Blondel Multilevel, FastGreedyMM, Infomap, LeadingEigenvectors, Walktrap, LabelPropag, Spectral clustering and Metis algos.
+
+* Line 50 : it is important to set the right number of active algorithms in `variable nb_active_algos` (i.e., number of previous boolean variables set to `True`).
+
+* Line 54 : chose the network by setting the variable network\_name  with the appropriate index number from the list `network_name` ('Email-Enron'=network\_name[0] , 'CA-GrQc'=network\_name[1] , 'CA-AstroPhys'=network\_name[2] , 'Wiki-Vote'=network\_name[3] , 'AS-Caida'=network\_name[4], 'CA-HepTh'=network\_name[5], 'P2P-GNutella'=network\_name[6]).
+
+* Line 62 : chose the perturbation model (ERP=noise\_model[0], CLP=noise\_model[1] or CONFIG=noise\_model[2]).
+
+* Line 64 : chose the perturabation type (`Add` or `Delete` edges. Note that for CONFIG model this parameter is not important).
+
+* Line 66 to line 75 : noise levels. The user has only to set the intensity of the perturbation at lines 69 (for `Delete` type) and 72 (for `Add` type). For example, for the CA-HEP-TH network, we have set the following parameters for the different perturbation models:
+  * ERP+Add => epsilon_values = [i * 0.285 for i in epsilon_valuesI] (line 72)
+  * ERP+Delete => epsilon_values = [i * 475 for i in epsilon_valuesI] (line 69)
+  * CLP+Add => epsilon_values = [i * 0.285 for i in epsilon_valuesI] (line 72)
+  * CLP+Delete => epsilon_values = [i * 91.6 for i in epsilon_valuesI] (line 69)
+  * Configuration model => nothing to do (line 75)
+

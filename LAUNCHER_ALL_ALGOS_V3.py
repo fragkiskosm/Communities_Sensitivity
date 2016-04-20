@@ -75,7 +75,7 @@ else:
     epsilon_values = np.linspace(0, 30, num=16)
 
 
-''' Paths '''
+''' Paths - change to your directories accordingly '''
 source_path = '/home/mmitri/Documents/Stage/Data/Source/'
 
 convert_path = '/home/mmitri/Documents/Stage/Data/Converted/' + network_name + '_iGraphFormat.txt'
@@ -838,13 +838,6 @@ if ifSave:
     # Save NMI values
     np.save(path_results+'NMIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete , nmi_values)
     
-    ## LOAD 
-    ## Save average n_added_deleted_edges
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/AVG_n_added_deleted_edges_'+network_name+'_'+noise_model+'_'+add_or_delete)
-    #
-    ## Save NMI values
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/NMIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete)
-
 
 ''' PLOT VI '''
 
@@ -872,12 +865,7 @@ if ifSave:
     # Save VI values
     np.save(path_results+'VIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete ,vi_values)
     
-    ## LOAD 
-    ## Save average n_added_deleted_edges
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/AVG_n_added_deleted_edges_'+network_name+'_'+noise_model+'_'+add_or_delete)
-    #
-    ## Save NMI values
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/NMIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete)
+
 
 ''' PLOT ARI '''
 fig1 = plt.figure()
@@ -932,13 +920,6 @@ if ifSave:
     # Save VI values
     np.save(path_results+'Modularityvalues_'+network_name+'_'+noise_model+'_'+add_or_delete ,modularity_values)
     
-    ## LOAD 
-    ## Save average n_added_deleted_edges
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/AVG_n_added_deleted_edges_'+network_name+'_'+noise_model+'_'+add_or_delete)
-    #
-    ## Save NMI values
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/NMIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete)
-
 
 
 ''' PLOT Nb clusters '''
@@ -967,12 +948,6 @@ if ifSave:
     # Save VI values
     np.save(path_results+'nb_clusters_values_'+network_name+'_'+noise_model+'_'+add_or_delete ,nb_clusters_values)
     
-    ## LOAD 
-    ## Save average n_added_deleted_edges
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/AVG_n_added_deleted_edges_'+network_name+'_'+noise_model+'_'+add_or_delete)
-    #
-    ## Save NMI values
-    #np.load('/home/mmitri/Documents/Stage/Codes/Results/NMIvalues_'+network_name+'_'+noise_model+'_'+add_or_delete)
 
 
 ''' Plot NCPs for Louvain '''

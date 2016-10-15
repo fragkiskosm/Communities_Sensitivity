@@ -1,7 +1,7 @@
 # Communities_Sensitivity: Sensitivity of Community Structure to Network Uncertainty
 
 ## Description and Datasets ##
-Description of the project, datasets and experimental results can be found http://fragkiskos.me/projects/communities_sensitivity/
+Description of the project, datasets and experimental results can be found at the following website: http://fragkiskos.me/projects/communities_sensitivity/
 
 ## Requirements ##
 * Linux (and other Unix-like systems)
